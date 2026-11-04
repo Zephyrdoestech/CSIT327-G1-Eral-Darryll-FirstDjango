@@ -1,36 +1,108 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h2>Admin Panel</h2>
-<h3>Members ({{ members|length }})</h3>
+{% block title %}Admin Panel - CampusConnect{% endblock %}
 
-{% if members %}
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Course</th>
-            <th>Staff</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for member in members %}
-        <tr>
-            <td>{{ member.get_full_name|default:member.username }}</td>
-            <td>{{ member.username }}</td>
-            <td>{{ member.email|default:"Not set" }}</td>
-            <td>{{ member.get_role_display }}</td>
-            <td>{{ member.course|default:"Not set" }}</td>
-            <td>{{ member.is_staff|yesno:"Yes,No" }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No members found.</p>
-{% endif %}
+{% block content %}
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white border-0 pt-4 pb-3">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center">
+                <div class="p-3 bg-danger-subtle text-danger rounded-3 me-3">
+                    <i class="bi bi-shield-lock-fill fs-3"></i>
+                </div>
+                <div>
+                    <h3 class="fw-bold mb-0">Admin Panel</h3>
+                    <p class="text-muted small mb-0">System Member Management &amp; Directory</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary fs-6 px-3 py-2">
+                    <i class="bi bi-people me-1"></i> {{ members|length }} Registered Member{{ members|length|pluralize }}
+                </span>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-0">
+        {% if members %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light border-bottom">
+                    <tr>
+                        <th class="ps-4 py-3">Member</th>
+                        <th class="py-3">Username</th>
+                        <th class="py-3">Email</th>
+                        <th class="py-3">Role</th>
+                        <th class="py-3">Course</th>
+                        <th class="py-3 text-center">Staff Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-primary-subtle text-primary fw-bold d-inline-flex align-items-center justify-content-center me-3" style="width: 38px; height: 38px; font-size: 0.95rem;">
+                                    {{ member.first_name|first|default:member.username|first|upper }}
+                                </div>
+                                <div>
+                                    <span class="fw-bold d-block text-dark">{{ member.get_full_name|default:member.username }}</span>
+                                    {% if member == user %}
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle small py-0 px-2">You</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <code class="text-dark bg-light px-2 py-1 rounded">@{{ member.username }}</code>
+                        </td>
+                        <td>
+                            {% if member.email %}
+                                <a href="mailto:{{ member.email }}" class="text-decoration-none text-muted">
+                                    <i class="bi bi-envelope me-1"></i>{{ member.email }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted fst-italic">Not set</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if member.role == 'admin' %}
+                                <span class="badge bg-danger">Administrator</span>
+                            {% elif member.role == 'INSTRUCTOR' %}
+                                <span class="badge bg-warning text-dark">Instructor</span>
+                            {% else %}
+                                <span class="badge bg-info text-dark">Student</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if member.course %}
+                                <span class="badge bg-light text-dark border">{{ member.course }}</span>
+                            {% else %}
+                                <span class="text-muted fst-italic">Not set</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if member.is_staff %}
+                                <span class="badge bg-success"><i class="bi bi-check-lg me-1"></i>Staff</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary">No</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="p-5 text-center text-muted">
+            <i class="bi bi-person-x display-4 d-block mb-3"></i>
+            <h5>No members found</h5>
+            <p class="small mb-0">No users have been registered yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
- 
