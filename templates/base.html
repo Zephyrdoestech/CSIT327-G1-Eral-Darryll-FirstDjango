@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head><title>CampusConnect</title></head>
+    <body>
+        <nav>
+            {% if user.is_authenticated %}
+             Hi, {{ user.username }}! <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Sign Up</a>
+            {% endif %}
+        </nav>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+    </body>
+</html>

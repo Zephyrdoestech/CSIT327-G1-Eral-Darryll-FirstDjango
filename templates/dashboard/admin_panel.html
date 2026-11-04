@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Admin Panel</h2>
+<h3>Members ({{ members|length }})</h3>
+
+{% if members %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Course</th>
+            <th>Staff</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for member in members %}
+        <tr>
+            <td>{{ member.get_full_name|default:member.username }}</td>
+            <td>{{ member.username }}</td>
+            <td>{{ member.email|default:"Not set" }}</td>
+            <td>{{ member.get_role_display }}</td>
+            <td>{{ member.course|default:"Not set" }}</td>
+            <td>{{ member.is_staff|yesno:"Yes,No" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No members found.</p>
+{% endif %}
+{% endblock %}
+ 
