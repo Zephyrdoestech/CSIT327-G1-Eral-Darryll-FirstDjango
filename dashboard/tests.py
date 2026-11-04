@@ -12,6 +12,12 @@ class DashboardAndAdminPanelTests(TestCase):
             password="Password123!",
             role=User.Role.STUDENT,
         )
+        self.staff_student = User.objects.create_user(
+            username="staffstudent",
+            password="Password123!",
+            role=User.Role.STUDENT,
+            is_staff=True,
+        )
         self.admin = User.objects.create_user(
             username="admin1",
             password="Password123!",
@@ -41,6 +47,12 @@ class DashboardAndAdminPanelTests(TestCase):
 
     def test_admin_panel_forbidden_for_student(self):
         self.client.login(username="student1", password="Password123!")
+        response = self.client.get(reverse("admin_panel"))
+        self.assertEqual(response.status_code, 403)
+
+    def test_admin_panel_forbidden_for_staff_student(self):
+        """Even with is_staff=True, a student cannot access the Admin Panel."""
+        self.client.login(username="staffstudent", password="Password123!")
         response = self.client.get(reverse("admin_panel"))
         self.assertEqual(response.status_code, 403)
 
