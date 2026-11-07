@@ -8,7 +8,7 @@ CampusConnect is a Django application with sign-up and login, a dashboard, and a
 
 ## Run locally
 
-1. Install Python 3.12 or later.
+1. Install Python 3.11 or later.
 2. Create and activate a virtual environment:
 
    ```powershell
